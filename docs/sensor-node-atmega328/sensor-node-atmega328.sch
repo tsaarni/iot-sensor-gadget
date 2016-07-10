@@ -1,0 +1,459 @@
+EESchema Schematic File Version 2
+LIBS:power
+LIBS:device
+LIBS:transistors
+LIBS:conn
+LIBS:linear
+LIBS:regul
+LIBS:74xx
+LIBS:cmos4000
+LIBS:adc-dac
+LIBS:memory
+LIBS:xilinx
+LIBS:microcontrollers
+LIBS:dsp
+LIBS:microchip
+LIBS:analog_switches
+LIBS:motorola
+LIBS:texas
+LIBS:intel
+LIBS:audio
+LIBS:interface
+LIBS:digital-audio
+LIBS:philips
+LIBS:display
+LIBS:cypress
+LIBS:siliconi
+LIBS:opto
+LIBS:atmel
+LIBS:contrib
+LIBS:valves
+LIBS:nRF24L01+
+LIBS:relays
+LIBS:Adem
+EELAYER 25 0
+EELAYER END
+$Descr A4 11693 8268
+encoding utf-8
+Sheet 1 1
+Title "Sensor node"
+Date "2016-07-08"
+Rev "1"
+Comp ""
+Comment1 ""
+Comment2 ""
+Comment3 ""
+Comment4 ""
+$EndDescr
+$Comp
+L R R2
+U 1 1 577F5951
+P 4850 3200
+F 0 "R2" V 4643 3200 50  0000 C CNN
+F 1 "10k" V 4734 3200 50  0000 C CNN
+F 2 "" V 4780 3200 50  0000 C CNN
+F 3 "" H 4850 3200 50  0000 C CNN
+	1    4850 3200
+	0    1    1    0   
+$EndComp
+$Comp
+L ATMEGA328-P IC1
+U 1 1 577F5D08
+P 3050 2850
+F 0 "IC1" H 3100 4307 50  0000 C CNN
+F 1 "ATMEGA328-P" H 3100 4216 50  0000 C CNN
+F 2 "DIL28" H 3100 4125 50  0000 C CIN
+F 3 "" H 3050 2850 50  0000 C CNN
+	1    3050 2850
+	1    0    0    -1  
+$EndComp
+$Comp
+L CP C2
+U 1 1 577F5E88
+P 7550 2150
+F 0 "C2" H 7700 2200 50  0000 L CNN
+F 1 "10u" H 7700 2100 50  0000 L CNN
+F 2 "" H 7588 2000 50  0000 C CNN
+F 3 "" H 7550 2150 50  0000 C CNN
+	1    7550 2150
+	1    0    0    -1  
+$EndComp
+$Comp
+L C C1
+U 1 1 577F5F7B
+P 4850 3600
+F 0 "C1" V 4598 3600 50  0000 C CNN
+F 1 "0,1u" V 4689 3600 50  0000 C CNN
+F 2 "" H 4888 3450 50  0000 C CNN
+F 3 "" H 4850 3600 50  0000 C CNN
+	1    4850 3600
+	0    1    1    0   
+$EndComp
+$Comp
+L +3V3 #PWR01
+U 1 1 577F6057
+P 1750 1600
+F 0 "#PWR01" H 1750 1450 50  0001 C CNN
+F 1 "+3V3" H 1765 1773 50  0000 C CNN
+F 2 "" H 1750 1600 50  0000 C CNN
+F 3 "" H 1750 1600 50  0000 C CNN
+	1    1750 1600
+	1    0    0    -1  
+$EndComp
+$Comp
+L GND #PWR02
+U 1 1 577F6077
+P 1750 4150
+F 0 "#PWR02" H 1750 3900 50  0001 C CNN
+F 1 "GND" H 1755 3977 50  0000 C CNN
+F 2 "" H 1750 4150 50  0000 C CNN
+F 3 "" H 1750 4150 50  0000 C CNN
+	1    1750 4150
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	1750 1600 1750 2050
+Wire Wire Line
+	1750 1750 2150 1750
+Connection ~ 1750 1750
+Wire Wire Line
+	1750 2050 2150 2050
+Wire Wire Line
+	2150 3950 1750 3950
+Wire Wire Line
+	1750 3950 1750 4150
+Connection ~ 1750 4050
+Wire Wire Line
+	2150 4050 1750 4050
+$Comp
+L +3V3 #PWR03
+U 1 1 577F665E
+P 5200 3200
+F 0 "#PWR03" H 5200 3050 50  0001 C CNN
+F 1 "+3V3" H 5215 3373 50  0000 C CNN
+F 2 "" H 5200 3200 50  0000 C CNN
+F 3 "" H 5200 3200 50  0000 C CNN
+	1    5200 3200
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	4050 3200 4700 3200
+Wire Wire Line
+	5000 3200 5200 3200
+Connection ~ 4550 3200
+Text GLabel 5000 3600 2    60   Input ~ 0
+DTR
+Wire Wire Line
+	4550 3200 4550 3600
+Wire Wire Line
+	4550 3600 4700 3600
+Text GLabel 4050 3350 2    60   Input ~ 0
+TX
+Text GLabel 4050 3450 2    60   Input ~ 0
+RX
+NoConn ~ 4050 3550
+NoConn ~ 4050 3650
+NoConn ~ 4050 3750
+NoConn ~ 4050 3850
+NoConn ~ 4050 3950
+NoConn ~ 4050 4050
+Text GLabel 4050 1750 2    60   Input ~ 0
+DOOR
+Text GLabel 4050 1850 2    60   Input ~ 0
+CE
+Text GLabel 4050 1950 2    60   Input ~ 0
+CSN
+Text GLabel 4050 2050 2    60   Input ~ 0
+MOSI
+Text GLabel 4050 2150 2    60   Input ~ 0
+MISO
+Text GLabel 4050 2250 2    60   Input ~ 0
+SCK
+Text GLabel 4050 2600 2    60   Input ~ 0
+LIGHT
+Text GLabel 4050 3000 2    60   Input ~ 0
+SDA
+Text GLabel 4050 3100 2    60   Input ~ 0
+SCL
+Text GLabel 8250 2050 0    60   Input ~ 0
+CE
+Text GLabel 8250 2200 0    60   Input ~ 0
+CSN
+NoConn ~ 9750 2200
+Text GLabel 9750 1750 2    60   Input ~ 0
+SCK
+Text GLabel 9750 1900 2    60   Input ~ 0
+MOSI
+Text GLabel 9750 2050 2    60   Input ~ 0
+MISO
+Text Notes 2750 1200 0    60   ~ 0
+microcontroller
+Text Notes 8850 1200 0    60   ~ 0
+radio
+$Comp
+L SPST SW1
+U 1 1 577F7C05
+P 3100 6000
+F 0 "SW1" H 3100 6265 50  0000 C CNN
+F 1 "SPST" H 3100 6174 50  0000 C CNN
+F 2 "" H 3100 6000 50  0000 C CNN
+F 3 "" H 3100 6000 50  0000 C CNN
+	1    3100 6000
+	1    0    0    -1  
+$EndComp
+$Comp
+L R R1
+U 1 1 577F7DA2
+P 3100 5550
+F 0 "R1" V 2893 5550 50  0000 C CNN
+F 1 "1M" V 2984 5550 50  0000 C CNN
+F 2 "" V 3030 5550 50  0000 C CNN
+F 3 "" H 3100 5550 50  0000 C CNN
+	1    3100 5550
+	0    1    1    0   
+$EndComp
+$Comp
+L GND #PWR04
+U 1 1 577F7E7C
+P 2350 6100
+F 0 "#PWR04" H 2350 5850 50  0001 C CNN
+F 1 "GND" H 2355 5927 50  0000 C CNN
+F 2 "" H 2350 6100 50  0000 C CNN
+F 3 "" H 2350 6100 50  0000 C CNN
+	1    2350 6100
+	1    0    0    -1  
+$EndComp
+$Comp
+L +3V3 #PWR05
+U 1 1 577F7ED7
+P 2350 5450
+F 0 "#PWR05" H 2350 5300 50  0001 C CNN
+F 1 "+3V3" H 2365 5623 50  0000 C CNN
+F 2 "" H 2350 5450 50  0000 C CNN
+F 3 "" H 2350 5450 50  0000 C CNN
+	1    2350 5450
+	1    0    0    -1  
+$EndComp
+Text GLabel 4000 6000 2    60   Input ~ 0
+DOOR
+Wire Wire Line
+	3600 6000 4000 6000
+Connection ~ 3800 6000
+Wire Wire Line
+	2600 6000 2350 6000
+Wire Wire Line
+	2350 6000 2350 6100
+Wire Wire Line
+	2350 5450 2350 5550
+Wire Wire Line
+	2350 5550 2950 5550
+Wire Wire Line
+	3250 5550 3800 5550
+Wire Wire Line
+	3800 5550 3800 6000
+Text Notes 2800 5050 0    60   ~ 0
+door sensor
+$Comp
+L +3V3 #PWR06
+U 1 1 577F8255
+P 8550 5400
+F 0 "#PWR06" H 8550 5250 50  0001 C CNN
+F 1 "+3V3" H 8565 5573 50  0000 C CNN
+F 2 "" H 8550 5400 50  0000 C CNN
+F 3 "" H 8550 5400 50  0000 C CNN
+	1    8550 5400
+	1    0    0    -1  
+$EndComp
+$Comp
+L GND #PWR07
+U 1 1 577F8278
+P 10000 6000
+F 0 "#PWR07" H 10000 5750 50  0001 C CNN
+F 1 "GND" H 10005 5827 50  0000 C CNN
+F 2 "" H 10000 6000 50  0000 C CNN
+F 3 "" H 10000 6000 50  0000 C CNN
+	1    10000 6000
+	1    0    0    -1  
+$EndComp
+$Comp
+L Photores R3
+U 1 1 577F829B
+P 9050 5700
+F 0 "R3" V 8605 5700 50  0000 C CNN
+F 1 "Photores" V 8696 5700 50  0000 C CNN
+F 2 "" V 8980 5700 50  0000 C CNN
+F 3 "" H 9050 5700 50  0000 C CNN
+	1    9050 5700
+	0    1    1    0   
+$EndComp
+Wire Wire Line
+	8550 5400 8550 5700
+Wire Wire Line
+	8550 5700 8800 5700
+$Comp
+L R R4
+U 1 1 577F836C
+P 9700 5700
+F 0 "R4" V 9493 5700 50  0000 C CNN
+F 1 "10k" V 9584 5700 50  0000 C CNN
+F 2 "" V 9630 5700 50  0000 C CNN
+F 3 "" H 9700 5700 50  0000 C CNN
+	1    9700 5700
+	0    1    1    0   
+$EndComp
+Wire Wire Line
+	9300 5700 9550 5700
+Connection ~ 9400 5700
+Text GLabel 8850 6050 0    60   Input ~ 0
+LIGHT
+Wire Wire Line
+	9400 5700 9400 6050
+Wire Wire Line
+	9400 6050 8850 6050
+Wire Wire Line
+	9850 5700 10000 5700
+Wire Wire Line
+	10000 5700 10000 6000
+Text Notes 9000 5050 0    60   ~ 0
+light sensor
+$Comp
+L +3V3 #PWR08
+U 1 1 577F8A03
+P 7550 1700
+F 0 "#PWR08" H 7550 1550 50  0001 C CNN
+F 1 "+3V3" H 7565 1873 50  0000 C CNN
+F 2 "" H 7550 1700 50  0000 C CNN
+F 3 "" H 7550 1700 50  0000 C CNN
+	1    7550 1700
+	1    0    0    -1  
+$EndComp
+$Comp
+L GND #PWR09
+U 1 1 577F8B5F
+P 7550 2450
+F 0 "#PWR09" H 7550 2200 50  0001 C CNN
+F 1 "GND" H 7555 2277 50  0000 C CNN
+F 2 "" H 7550 2450 50  0000 C CNN
+F 3 "" H 7550 2450 50  0000 C CNN
+	1    7550 2450
+	1    0    0    -1  
+$EndComp
+$Comp
+L nRF24L01+ U2
+U 1 1 577F6174
+P 9000 1950
+F 0 "U2" H 9000 2465 50  0000 C CNN
+F 1 "nRF24L01+" H 9000 2374 50  0000 C CNN
+F 2 "MODULE" H 9000 2050 50  0001 C CNN
+F 3 "DOCUMENTATION" H 9000 1900 50  0001 C CNN
+	1    9000 1950
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	7550 2300 7550 2450
+$Comp
+L GND #PWR010
+U 1 1 577F95D8
+P 8250 1750
+F 0 "#PWR010" H 8250 1500 50  0001 C CNN
+F 1 "GND" V 8255 1622 50  0000 R CNN
+F 2 "" H 8250 1750 50  0000 C CNN
+F 3 "" H 8250 1750 50  0000 C CNN
+	1    8250 1750
+	0    1    1    0   
+$EndComp
+Wire Wire Line
+	7550 2000 7550 1700
+Connection ~ 7550 1900
+Wire Wire Line
+	8250 1900 7550 1900
+$Comp
+L HTU21D U1
+U 1 1 577F96D7
+P 6600 5750
+F 0 "U1" H 6827 5808 60  0000 L CNN
+F 1 "HTU21D" H 6827 5702 60  0000 L CNN
+F 2 "" H 6600 5750 60  0000 C CNN
+F 3 "" H 6600 5750 60  0000 C CNN
+	1    6600 5750
+	1    0    0    -1  
+$EndComp
+$Comp
+L +3V3 #PWR011
+U 1 1 577F983F
+P 5600 5500
+F 0 "#PWR011" H 5600 5350 50  0001 C CNN
+F 1 "+3V3" H 5615 5673 50  0000 C CNN
+F 2 "" H 5600 5500 50  0000 C CNN
+F 3 "" H 5600 5500 50  0000 C CNN
+	1    5600 5500
+	1    0    0    -1  
+$EndComp
+$Comp
+L GND #PWR012
+U 1 1 577F9868
+P 5600 5950
+F 0 "#PWR012" H 5600 5700 50  0001 C CNN
+F 1 "GND" H 5605 5777 50  0000 C CNN
+F 2 "" H 5600 5950 50  0000 C CNN
+F 3 "" H 5600 5950 50  0000 C CNN
+	1    5600 5950
+	1    0    0    -1  
+$EndComp
+Text GLabel 6100 5800 0    60   Input ~ 0
+SDA
+Text GLabel 6100 5900 0    60   Input ~ 0
+SCL
+Wire Wire Line
+	6100 5600 5600 5600
+Wire Wire Line
+	5600 5600 5600 5500
+Wire Wire Line
+	6100 5700 5600 5700
+Wire Wire Line
+	5600 5700 5600 5950
+Text Notes 5500 5050 0    60   ~ 0
+temperature and humidity sensor
+$Comp
+L CONN_01X06 P1
+U 1 1 577F9BCB
+P 9400 3550
+F 0 "P1" H 9478 3591 50  0000 L CNN
+F 1 "CONN_01X06" H 9478 3500 50  0000 L CNN
+F 2 "" H 9400 3550 50  0000 C CNN
+F 3 "" H 9400 3550 50  0000 C CNN
+	1    9400 3550
+	1    0    0    -1  
+$EndComp
+Text GLabel 9200 3300 0    60   Input ~ 0
+DTR
+Text GLabel 9200 3400 0    60   Input ~ 0
+RX
+Text GLabel 9200 3500 0    60   Input ~ 0
+TX
+NoConn ~ 9200 3600
+NoConn ~ 9200 3700
+$Comp
+L GND #PWR013
+U 1 1 577F9DE1
+P 9000 3900
+F 0 "#PWR013" H 9000 3650 50  0001 C CNN
+F 1 "GND" H 9005 3727 50  0000 C CNN
+F 2 "" H 9000 3900 50  0000 C CNN
+F 3 "" H 9000 3900 50  0000 C CNN
+	1    9000 3900
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	9000 3900 9000 3800
+Wire Wire Line
+	9000 3800 9200 3800
+Text Notes 8950 3000 0    60   ~ 0
+UART header
+NoConn ~ 4050 2350
+NoConn ~ 4050 2450
+NoConn ~ 4050 2700
+NoConn ~ 4050 2800
+NoConn ~ 4050 2900
+NoConn ~ 2150 2350
+$EndSCHEMATC
