@@ -10,7 +10,7 @@ static DoorSensor* self = nullptr;
 void
 interrupt_handler()
 {
-   LOG_INFO("Interrupt triggered");
+   LOG_INFO(PSTR("Interrupt triggered"));
    self->tripped();
 }
 
@@ -18,7 +18,7 @@ interrupt_handler()
 DoorSensor::DoorSensor(uint8_t pin)
    : pin_(pin)
 {
-   LOG_INFO("Initializing...");
+   LOG_INFO(PSTR("Initializing..."));
    
    pinMode(pin_, INPUT_PULLUP);
    attachInterrupt(digitalPinToInterrupt(pin_), interrupt_handler, CHANGE);
@@ -29,7 +29,7 @@ DoorSensor::DoorSensor(uint8_t pin)
 void 
 DoorSensor::tripped()
 {
-   String state((digitalRead(pin_) == HIGH) ? "open" : "close");
+   String state((digitalRead(pin_) == HIGH) ? PSTR("open") : PSTR("close"));
    gateway.publish(state);
 }
 

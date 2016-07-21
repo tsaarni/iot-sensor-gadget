@@ -8,7 +8,7 @@
 Gateway::Gateway(uint8_t ce, uint8_t cs, const char* topic_prefix)
    : radio_(ce, cs), topic_prefix_(topic_prefix)
 {
-   LOG_INFO("Initializing...");
+   LOG_INFO(PSTR("Initializing..."));
    const uint8_t address[5] PROGMEM = { '1', 'm', 'q', 't', 't' };
 
    radio_.begin();
@@ -18,21 +18,21 @@ Gateway::Gateway(uint8_t ce, uint8_t cs, const char* topic_prefix)
 
 
 void
-Gateway::set_node_id(uint16_t node_id)
+Gateway::register_node(const char* node_id)
 {
-   LOG_INFO("setting node id");
+   LOG_INFO(PSTR("setting node id"));
    LOG_INFO(node_id);
 
    bool registered = false;
    byte buf[32] = {0};
    
-   whilte (registered)
+   while (registered)
    {
-      registered = radio.writeBlocking();
+      registered = radio_.writeBlocking(buf, sizeof(buf), 1000);
       
-      if (registered == true && radio.available())
+      if (registered == true && radio_.available())
       {
-         radio.read(buf, sizeof(buf));
+         radio_.read(buf, sizeof(buf));
       }
    }
 
@@ -44,7 +44,7 @@ Gateway::set_node_id(uint16_t node_id)
 void
 Gateway::publish(const String& msg)
 {   
-   LOG_INFO("Publishing:");
+   LOG_INFO(PSTR("Publishing:"));
    LOG_INFO(msg.c_str());
    radio_.write(msg.c_str(), msg.length() + 1);
 }
