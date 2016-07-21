@@ -18,6 +18,30 @@ Gateway::Gateway(uint8_t ce, uint8_t cs, const char* topic_prefix)
 
 
 void
+Gateway::set_node_id(uint16_t node_id)
+{
+   LOG_INFO("setting node id");
+   LOG_INFO(node_id);
+
+   bool registered = false;
+   byte buf[32] = {0};
+   
+   whilte (registered)
+   {
+      registered = radio.writeBlocking();
+      
+      if (registered == true && radio.available())
+      {
+         radio.read(buf, sizeof(buf));
+      }
+   }
+
+
+   
+}
+
+
+void
 Gateway::publish(const String& msg)
 {   
    LOG_INFO("Publishing:");
