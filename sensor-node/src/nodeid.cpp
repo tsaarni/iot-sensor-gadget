@@ -3,12 +3,13 @@
 #include <Arduino.h>
 #include <EEPROM.h>
 
+#include "logging.hpp"
 #include "nodeid.hpp"
 
 
 
 NodeId::NodeId()
-   : name_()
+   : node_()
 {
 }
 
@@ -17,43 +18,48 @@ const char*
 NodeId::get()
 {
    // check if node name is already stored in eeprom
-   if (eeprom_crc16_(node_name_len_ + 2))
+   if (eeprom_crc16_(node_id_len_ + 2))
    {
-      // it was not: generate random node name
+      LOG_INFO(PSTR("node id was not set: generate random node id"));
       int i;
       
-      for (i=0; i < (node_name_len_); ++i)
+      for (i=0; i < (node_id_len_); ++i)
       {
          EEPROM[i] = 'a' + random('z'-'a');
       }
       
-      uint16_t crc = eeprom_crc16_(node_name_len_);
+      uint16_t crc = eeprom_crc16_(node_id_len_);
       EEPROM[i++] = static_cast<uint8_t>(crc>>8);
       EEPROM[i]   = static_cast<uint8_t>(crc & 0xff);
    }
 
-   for (int i=0; i < node_name_len_; ++i)
+   for (int i=0; i < node_id_len_; ++i)
    {
-      name_[i] = EEPROM[i];
+      node_[i] = EEPROM[i];
    }
    
-   return name_;
+   LOG_INFO(PSTR("node id:"));
+   LOG_INFO(node_);
+   return node_;
 }
 
 
 void
 NodeId::set(const char* node_id)
 {
+   LOG_INFO(PSTR("setting new node id:"));
+   LOG_INFO(node_id);
+   
    int i;
    
-   for (i=0; i < node_name_len_; ++i)
+   for (i=0; i < node_id_len_; ++i)
    {
       EEPROM[i] = node_id[i];
 
       if (node_id[i] == 0) break;
    }
 
-   uint16_t crc = eeprom_crc16_(node_name_len_);
+   uint16_t crc = eeprom_crc16_(node_id_len_);
    EEPROM[i++] = static_cast<uint8_t>(crc>>8);
    EEPROM[i]   = static_cast<uint8_t>(crc & 0xff);
 }

@@ -15,8 +15,8 @@ public:
 private:
    uint16_t eeprom_crc16_(size_t len);
    
-   static const int node_name_len_ = 5;
-   char name_[node_name_len_ + 1];
+   static const int node_id_len_ = 5;
+   char node_[node_id_len_ + 1];
 };
 
 
