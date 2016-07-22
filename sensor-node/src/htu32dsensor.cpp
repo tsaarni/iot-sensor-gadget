@@ -8,7 +8,7 @@
 
 Htu32dSensor::Htu32dSensor()
 {
-   LOG_INFO(PSTR("Initializing..."));
+   LOG_INFO("Initializing...");
    htu_.begin();
 }
 
@@ -16,10 +16,10 @@ Htu32dSensor::Htu32dSensor()
 void
 Htu32dSensor::publish()
 {
-   LOG_INFO(PSTR("Reading sensor"));
+   LOG_INFO("Reading sensor");
    
-   String temp(PSTR("/temp/"));
-   String humid(PSTR("/humid/"));
+   String temp("/temp/");
+   String humid("/humid/");
 
    temp.concat(htu_.readTemperature());
    humid.concat(htu_.readHumidity());

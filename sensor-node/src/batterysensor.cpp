@@ -28,7 +28,7 @@ BatterySensor::publish()
 
    result = 1125300L / result; // Calculate Vcc (in mV); 1125300 = 1.1*1023*1000
 
-   String value(PSTR("/bat/"));
+   String value("/bat/");
    value.concat(result);
    gateway.publish(value);
 }

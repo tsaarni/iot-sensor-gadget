@@ -7,7 +7,7 @@
 LightSensor::LightSensor(uint8_t pin)
    : pin_(pin)
 {
-   LOG_INFO(PSTR("Initializing..,"));
+   LOG_INFO("Initializing..,");
 
    pinMode(pin_, INPUT);
 }
@@ -16,9 +16,9 @@ LightSensor::LightSensor(uint8_t pin)
 void
 LightSensor::publish()
 {
-   LOG_INFO(PSTR("Reading sensor"));
+   LOG_INFO("Reading sensor");
    
-   String value(PSTR("/light/"));
+   String value("/light/");
    value.concat(analogRead(pin_));
    gateway.publish(value);
 }

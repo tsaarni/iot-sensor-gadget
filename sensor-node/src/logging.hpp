@@ -5,8 +5,8 @@
 #include <Arduino.h>
 
 
-#define LOG_INFO(msg) logging_println_(LOGGING_PREFIX_INFO_, msg)
-#define LOG_ERROR(msg) logging_println_(LOGGING_PREFIX_ERROR_, msg)
+#define LOG_INFO(...) logging_println_(LOGGING_PREFIX_INFO_, __VA_ARGS__)
+#define LOG_ERROR(...) logging_println_(LOGGING_PREFIX_ERROR_, __VA_ARGS__)
 
 
 
@@ -18,9 +18,16 @@
 
 
 inline void
-logging_println_(const char* filelinelevel, const char* msg)
+logging_println_(const char* filelinelevel, const char* fmt, ...)
 {
    static char buf[128];
-   snprintf(buf, sizeof(buf), "%s%s", filelinelevel, msg);
+
+   strncpy(buf, filelinelevel, sizeof(buf));
+
+   size_t len = strlen(buf);
+   va_list args;
+   va_start(args, fmt );
+   vsnprintf(buf + len, sizeof(buf) - len, fmt, args);
+   va_end (args);
    Serial.println(buf);
 }

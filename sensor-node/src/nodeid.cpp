@@ -14,13 +14,13 @@ NodeId::NodeId()
 }
 
 
-const char*
+const char* 
 NodeId::get()
 {
    // check if node name is already stored in eeprom
    if (eeprom_crc16_(node_id_len_ + 2))
    {
-      LOG_INFO(PSTR("node id was not set: generate random node id"));
+      LOG_INFO("node id was not set: generate random node id");
       int i;
       
       for (i=0; i < (node_id_len_); ++i)
@@ -38,8 +38,7 @@ NodeId::get()
       node_[i] = EEPROM[i];
    }
    
-   LOG_INFO(PSTR("node id:"));
-   LOG_INFO(node_);
+   LOG_INFO("node id: %s", node_);
    return node_;
 }
 
@@ -47,8 +46,7 @@ NodeId::get()
 void
 NodeId::set(const char* node_id)
 {
-   LOG_INFO(PSTR("setting new node id:"));
-   LOG_INFO(node_id);
+   LOG_INFO("setting new node id: %s", node_id);
    
    int i;
    
