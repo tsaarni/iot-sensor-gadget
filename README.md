@@ -1,5 +1,5 @@
 
-# IoT Sensor Gadget
+# Sensor Gadgets
 
 **NOTE: This is work in progress**
 
@@ -10,9 +10,9 @@ The readings can then be further processed and stored e.g. into a time series da
 
 The Sensor Gadget network consists of single gateway node and one or more sensor nodes.
 
-### Sensor node
+### Multi-sensor node
 
-Sensor node is based on Atmel ATmega328 microcontroller and contains one or several of the following sensors:
+Multi-sensor node is based on Atmel ATmega328 microcontroller and contains one or several of the following sensors:
 
 - door (tripped when door remains opened for certain time)
 - light
@@ -20,8 +20,14 @@ Sensor node is based on Atmel ATmega328 microcontroller and contains one or seve
 - humidity
 - battery level
 
-Sensor node is powered by a battery and it is connected to the gateway using low power Nordic Semiconductor nRF24L01+ radio module.
-Further details can be seen in [sensor node schematics](https://media.githubusercontent.com/media/tsaarni/iot-sensor-gadget/master/docs/sensor-node-atmega328/sensor-node-atmega328.png).
+Multi-sensor node is powered by a battery and it is connected to the gateway using low power Nordic Semiconductor nRF24L01+ radio module.
+Further details can be seen in [multi-sensor node schematics](https://media.githubusercontent.com/media/tsaarni/sensor-gadgets/master/docs/multi-sensor-node-atmega328/sensor-node-atmega328.png).
+
+
+### Current sensor node
+
+Current sensor node consist of current transformers for 3 phases and analog-to-digital converters to measure the voltage across the transformers.  Measurement is taken NNN times per second and root-mean-square voltage is calculated.  The three RMS values is reported to the gateway using nRF24L01+ radio module.
+Current sensor node is powered by 5V power supply.
 
 
 ### Gateway node
