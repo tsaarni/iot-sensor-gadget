@@ -1,28 +1,82 @@
 
+#include <stdint.h>
+#include <stdio.h>
+
 #include <Arduino.h>
 #include <Wire.h>
 #include <ADS1115.h>
+#include <RF24.h>
 
-ADS1115 adc0(ADS1115_DEFAULT_ADDRESS);
+#include "logging.hpp"
+
+
+// mqtt topic to post the measured current transformer values
+const char* topic = "current";
+
+
+ADS1115 adc1(ADS1115_ADDRESS_ADDR_VDD);
+ADS1115 adc2(ADS1115_ADDRESS_ADDR_GND);
+
+RF24 radio(/* ce pin */ 9, /* cs pin */ 10);
+
+
+void
+register_node_to_gateway(const char* node_id)
+{
+   const uint8_t address[5] = { '1', 'm', 'q', 't', 't' };
+   int timeout = 10000;
+
+   radio.begin();
+   radio.openWritingPipe(address);
+   radio.setPALevel(RF24_PA_LOW);
+
+   bool registered = false;
+
+   String reg_req("/register/");
+   reg_req += node_id;
+
+   while (registered == false)
+   {
+      LOG_INFO("sending: %s", reg_req.c_str());
+      if (radio.write(reg_req.c_str(), reg_req.length()) == false)
+      {
+         LOG_ERROR("write failed, sleeping");
+         delay(timeout);
+         continue;
+      }
+
+      if (radio.available())
+      {
+         byte buf[32] = {0};
+         LOG_INFO("reading response");
+         radio.read(buf, sizeof(buf));
+      }
+   }
+
+
+}
 
 
 double
-calc_rms(unsigned int crossings, unsigned int timeout_ms)
+calc_rms(ADS1115* adc, uint8_t mux, unsigned int crossings, unsigned int timeout_ms)
 {
     double sum = 0;
     unsigned int num_samples = 0;
     double prev_sample = 0;
+
+    adc->setMultiplexer(mux);
+
     unsigned long start = millis();
 
     while ((crossings > 0) && ((millis() - start) < timeout_ms))
     {
         // read mV from A/D converter
-        double sample = adc0.getConversionP0N1() * ADS1115_MV_1P024;
+        double sample = adc->getConversion() * ADS1115_MV_1P024;
         num_samples++;
 
         sum += sample * sample;
 
-        // calculate points where sample sign changes
+        // calculate points where sample sign changes when the sine wave crosses zero
         if (signbit(prev_sample) != signbit(sample))
         {
             crossings--;
@@ -39,20 +93,46 @@ setup()
 {
     Serial.begin(115200);
 
+    register_node_to_gateway("");
+
     Wire.begin();
-    adc0.initialize();
+    adc1.initialize();
+    adc2.initialize();
 
-    Serial.println(adc0.testConnection() ? "ADS1115 connection successful" : "ADS1115 connection failed");
+    if (adc1.testConnection() == false)
+    {
+        LOG_ERROR("connection to ADC1 failed");
+    }
 
-    adc0.setMode(ADS1115_MODE_CONTINUOUS);
-    adc0.setGain(ADS1115_PGA_1P024);  // range +-1024 mVolts
-    adc0.setRate(ADS1115_RATE_860);  // 860 samples per second
+    if (adc2.testConnection() == false)
+    {
+        LOG_ERROR("connection to ADC2 failed");
+    }
+
+    adc1.setMode(ADS1115_MODE_CONTINUOUS);
+    adc1.setGain(ADS1115_PGA_1P024);  // range +-1024 mVolts
+    adc1.setRate(ADS1115_RATE_860);   // 860 samples per second
+
+    adc2.setMode(ADS1115_MODE_CONTINUOUS);
+    adc2.setGain(ADS1115_PGA_1P024);
+    adc2.setRate(ADS1115_RATE_860);
 }
 
 void
 loop()
 {
-    double millivolts = calc_rms(100, 5000);
-    Serial.println(millivolts);
-    //Serial.println(0.03*millivolts);
+    double ct1_mv = calc_rms(&adc1, ADS1115_MUX_P0_N1, 100, 5000);
+    double ct2_mv = calc_rms(&adc1, ADS1115_MUX_P2_N3, 100, 5000);
+    double ct3_mv = calc_rms(&adc2, ADS1115_MUX_P0_N1, 100, 5000);
+
+    // maximum payload size is 32 bytes
+    static char buf[32];
+    snprintf(buf, sizeof(buf), "/%s/%.2f;%.2f;%.2f", topic, ct1_mv, ct2_mv, ct3_mv);
+    String report_ind(buf);
+
+    LOG_INFO("sending: %s", buf);
+    if (radio.write(report_ind.c_str(), report_ind.length()) == false)
+    {
+        LOG_ERROR("sending report failed");
+    }
 }
