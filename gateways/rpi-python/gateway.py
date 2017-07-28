@@ -7,7 +7,7 @@ import paho.mqtt.client as mqtt
 
 
 radio = RF24.RF24(RPI_BPLUS_GPIO_J8_22, RPI_BPLUS_GPIO_J8_24, BCM2835_SPI_SPEED_8MHZ)
-mqttc = mqtt.Client()
+mqtt = mqtt.Client()
 
 
 def radio_interrupt(channel):
@@ -35,7 +35,26 @@ radio.openWritingPipe(pipes[1])
 radio.openReadingPipe(1, pipe_name)
 radio.startListening()
 
-connect(host, port=1883, keepalive=60, bind_address="")
+mqtt.connect(host='localhost')
+mqtt.subscribe('/foo')
+mqtt.loop_forever()
 
-while 1:
-    time.sleep(1000)
+
+
+
+
+
+import nrf24
+radio = nrf24.NRF24()
+radio.begin(0, 0, 22, 25)
+radio.openReadingPipe(1, bytearray('1mqtt', 'utf-8'))
+
+radio.printDetails()
+
+while True:
+    while not radio.available(1, irq_wait=True):
+        pass
+    recv_buffer = []
+    radio.read(recv_buffer)
+    print recv_buffer
+

@@ -1,4 +1,3 @@
-#spidev == 3.2
-#rpi.gpio == 0.6.3
-#git+https://github.com/jpbarraca/pynrf24.git
-git+https://github.com/nRF24/RF24.git#subdirectory=pyRF24
+spidev == 3.2
+rpi.gpio == 0.6.3
+git+https://github.com/jpbarraca/pynrf24.git@5aa1cc02d3f56863eb143a7105d76dc92fd25e8b
