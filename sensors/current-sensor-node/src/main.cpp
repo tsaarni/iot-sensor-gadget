@@ -29,6 +29,11 @@ register_node_to_gateway(const char* node_id)
    radio.begin();
    radio.openWritingPipe(address);
    radio.setPALevel(RF24_PA_LOW);
+   radio.stopListening();
+
+
+   return;
+
 
    bool registered = false;
 
@@ -60,79 +65,79 @@ register_node_to_gateway(const char* node_id)
 double
 calc_rms(ADS1115* adc, uint8_t mux, unsigned int crossings, unsigned int timeout_ms)
 {
-    double sum = 0;
-    unsigned int num_samples = 0;
-    double prev_sample = 0;
+   double sum = 0;
+   unsigned int num_samples = 0;
+   double prev_sample = 0;
 
-    adc->setMultiplexer(mux);
+   adc->setMultiplexer(mux);
 
-    unsigned long start = millis();
+   unsigned long start = millis();
 
-    while ((crossings > 0) && ((millis() - start) < timeout_ms))
-    {
-        // read mV from A/D converter
-        double sample = adc->getConversion() * ADS1115_MV_1P024;
-        num_samples++;
+   while ((crossings > 0) && ((millis() - start) < timeout_ms))
+   {
+      // read mV from A/D converter
+      double sample = adc->getConversion() * ADS1115_MV_1P024;
+      num_samples++;
 
-        sum += sample * sample;
+      sum += sample * sample;
 
-        // calculate points where sample sign changes when the sine wave crosses zero
-        if (signbit(prev_sample) != signbit(sample))
-        {
-            crossings--;
-        }
-        prev_sample = sample;
-    }
+      // calculate points where sample sign changes when the sine wave crosses zero
+      if (signbit(prev_sample) != signbit(sample))
+      {
+         crossings--;
+      }
+      prev_sample = sample;
+   }
 
-    return sqrt(sum / num_samples);
+   return sqrt(sum / num_samples);
 }
 
 
 void
 setup()
 {
-    Serial.begin(115200);
+   Serial.begin(115200);
 
-    register_node_to_gateway("");
+   register_node_to_gateway("");
 
-    Wire.begin();
-    adc1.initialize();
-    adc2.initialize();
+   Wire.begin();
+   adc1.initialize();
+   adc2.initialize();
 
-    if (adc1.testConnection() == false)
-    {
-        LOG_ERROR("connection to ADC1 failed");
-    }
+   if (adc1.testConnection() == false)
+   {
+      LOG_ERROR("connection to ADC1 failed");
+   }
 
-    if (adc2.testConnection() == false)
-    {
-        LOG_ERROR("connection to ADC2 failed");
-    }
+   if (adc2.testConnection() == false)
+   {
+      LOG_ERROR("connection to ADC2 failed");
+   }
 
-    adc1.setMode(ADS1115_MODE_CONTINUOUS);
-    adc1.setGain(ADS1115_PGA_1P024);  // range +-1024 mVolts
-    adc1.setRate(ADS1115_RATE_860);   // 860 samples per second
+   adc1.setMode(ADS1115_MODE_CONTINUOUS);
+   adc1.setGain(ADS1115_PGA_1P024);  // range +-1024 mVolts
+   adc1.setRate(ADS1115_RATE_860);   // 860 samples per second
 
-    adc2.setMode(ADS1115_MODE_CONTINUOUS);
-    adc2.setGain(ADS1115_PGA_1P024);
-    adc2.setRate(ADS1115_RATE_860);
+   adc2.setMode(ADS1115_MODE_CONTINUOUS);
+   adc2.setGain(ADS1115_PGA_1P024);
+   adc2.setRate(ADS1115_RATE_860);
 }
 
 void
 loop()
 {
-    double ct1_mv = calc_rms(&adc1, ADS1115_MUX_P0_N1, 100, 5000);
-    double ct2_mv = calc_rms(&adc1, ADS1115_MUX_P2_N3, 100, 5000);
-    double ct3_mv = calc_rms(&adc2, ADS1115_MUX_P0_N1, 100, 5000);
+   //double ct1_mv = calc_rms(&adc1, ADS1115_MUX_P0_N1, 100, 5000);
+   //double ct2_mv = calc_rms(&adc1, ADS1115_MUX_P2_N3, 100, 5000);
+   //double ct3_mv = calc_rms(&adc2, ADS1115_MUX_P0_N1, 100, 5000);
+   double ct1_mv = 1;
+   double ct2_mv = 1;
+   double ct3_mv = 1;
 
-    // maximum payload size is 32 bytes
-    static char buf[32];
-    snprintf(buf, sizeof(buf), "/%s/%.2f;%.2f;%.2f", topic, ct1_mv, ct2_mv, ct3_mv);
-    String report_ind(buf);
+   String msg("/" + String(topic) + "/" + String(ct1_mv) + ";" + String(ct2_mv) + ";" + String(ct3_mv));
 
-    LOG_INFO("sending: %s", buf);
-    if (radio.write(report_ind.c_str(), report_ind.length()) == false)
-    {
-        LOG_ERROR("sending report failed");
-    }
+   LOG_INFO("sending: %s", msg.c_str());
+   if (radio.write(msg.c_str(), msg.length()) == false)
+   {
+      LOG_ERROR("sending message failed");
+   }
 }

@@ -48,13 +48,14 @@ import nrf24
 radio = nrf24.NRF24()
 radio.begin(0, 0, 22, 25)
 radio.openReadingPipe(1, bytearray('1mqtt', 'utf-8'))
+radio.enableDynamicPayloads()
 
 radio.printDetails()
+radio.startListening()
 
 while True:
     while not radio.available(1, irq_wait=True):
         pass
-    recv_buffer = []
-    radio.read(recv_buffer)
-    print recv_buffer
-
+    buf = []
+    radio.read(buf)
+    print(buf)
