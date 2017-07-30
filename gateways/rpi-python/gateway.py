@@ -1,61 +1,65 @@
 #!/usr/bin/env python
 
-import time
-import RF24
-import RPi.GPIO as GPIO
+import logging
+import nrf24
 import paho.mqtt.client as mqtt
 
 
-radio = RF24.RF24(RPI_BPLUS_GPIO_J8_22, RPI_BPLUS_GPIO_J8_24, BCM2835_SPI_SPEED_8MHZ)
-mqtt = mqtt.Client()
+# mqtt broker address
+mqtt_address = 'localhost'
+
+# pipe address for receiving messages from sensors
+nrf_address = '1mqtt'
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger('gateway')
 
 
-def radio_interrupt(channel):
-    if radio.available():
-        while radio.available():
-            len = radio.getDynamicPayloadSize()
-            buf = radio.read(len)
-            print('Got payload size={} value="{}"'.format(len, receive_payload.decode('utf-8')))
+########################################################################
+
+def mqtt_connect(client, *rest):
+    logger.info('connection to mqtt broker established')
+
+def mqtt_disconnect(client, *rest):
+    logger.info('connection to mqtt broker was terminated')
 
 
+def main():
+
+    # setup radio
+    logger.info('initializing radio: address=%s' % nrf_address)
+    radio = nrf24.NRF24()
+    radio.begin(0, 0, 22, 25)  # spi bus, device, ce_pin, irq_pin
+    radio.openReadingPipe(1, bytearray(nrf_address, 'utf-8'))
+    radio.enableDynamicPayloads()
+    radio.printDetails()
+    radio.startListening()
+
+    # establish connection to mqtt broker
+    logger.info('establishing connection to mqtt broker: address=%s' % mqtt_address)
+    mqttc = mqtt.Client()
+    mqttc.loop_start()  # run client network loop in background thread
+    mqttc.on_connect = mqtt_connect
+    mqttc.on_disconnect = mqtt_disconnect
+    mqttc.connect(host=mqtt_address)
 
 
-GPIO.setmode(GPIO.BCM)
+    # receive messages from sensors and relay them to broker
+    logger.info('entering main loop')
+    while True:
+        while not radio.available(irq_wait=True):
+            pass
 
-GPIO.setup(2, GPIO.IN, pull_up_down=GPIO.PUD_UP)
-GPIO.add_event_detect(2, GPIO.FALLING, callback=radio_interrupt)
+        buf = []
+        radio.read(buf)
+        msg = ''.join([chr(x) for x in buf]) # from array of integers into string
 
+        # msg = 'topic?payload'
+        topic, payload = msg.split('?')
 
-radio.begin()
-radio.enableDynamicPayloads()
-radio.setRetries(5,15)
-radio.printDetails()
-
-radio.openWritingPipe(pipes[1])
-radio.openReadingPipe(1, pipe_name)
-radio.startListening()
-
-mqtt.connect(host='localhost')
-mqtt.subscribe('/foo')
-mqtt.loop_forever()
+        #logger.info('publishing: %s' % msg)
+        mqttc.publish(topic, payload);
 
 
-
-
-
-
-import nrf24
-radio = nrf24.NRF24()
-radio.begin(0, 0, 22, 25)
-radio.openReadingPipe(1, bytearray('1mqtt', 'utf-8'))
-radio.enableDynamicPayloads()
-
-radio.printDetails()
-radio.startListening()
-
-while True:
-    while not radio.available(1, irq_wait=True):
-        pass
-    buf = []
-    radio.read(buf)
-    print(buf)
+if __name__ == '__main__':
+    main()

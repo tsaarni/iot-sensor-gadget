@@ -6,6 +6,7 @@
 #include <Wire.h>
 #include <ADS1115.h>
 #include <RF24.h>
+#include "printf.h"
 
 #include "logging.hpp"
 
@@ -26,10 +27,12 @@ register_node_to_gateway(const char* node_id)
    const uint8_t address[5] = { '1', 'm', 'q', 't', 't' };
    int timeout = 10000;
 
+   LOG_INFO("starting radio...");
    radio.begin();
+   radio.enableDynamicPayloads();
    radio.openWritingPipe(address);
-   radio.setPALevel(RF24_PA_LOW);
-   radio.stopListening();
+   radio.printDetails();
+   // radio.stopListening();
 
 
    return;
@@ -97,6 +100,7 @@ void
 setup()
 {
    Serial.begin(115200);
+   printf_begin();
 
    register_node_to_gateway("");
 
@@ -121,6 +125,8 @@ setup()
    adc2.setMode(ADS1115_MODE_CONTINUOUS);
    adc2.setGain(ADS1115_PGA_1P024);
    adc2.setRate(ADS1115_RATE_860);
+
+   LOG_INFO("entering main loop...");
 }
 
 void
@@ -133,11 +139,11 @@ loop()
    double ct2_mv = 1;
    double ct3_mv = 1;
 
-   String msg("/" + String(topic) + "/" + String(ct1_mv) + ";" + String(ct2_mv) + ";" + String(ct3_mv));
+   String msg("/" + String(topic) + "?" + String(ct1_mv) + ";" + String(ct2_mv) + ";" + String(ct3_mv));
 
-   LOG_INFO("sending: %s", msg.c_str());
-   if (radio.write(msg.c_str(), msg.length()) == false)
+   LOG_INFO("sending: %s (len:%d)", msg.c_str(), msg.length());
+   if (radio.write(msg.c_str(), msg.length(), 1) == false)
    {
-      LOG_ERROR("sending message failed");
+      LOG_ERROR("there was no receiver for message");
    }
 }

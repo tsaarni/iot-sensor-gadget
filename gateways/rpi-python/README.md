@@ -10,10 +10,6 @@ sensors and forwards them to MQTT broker.
 
 ## Installation
 
-Following instructions are distro specific and it might be that part
-of them are not required for Raspbian.  In this document Arch Linux is
-assumed.
-
 Enable SPI by adding following line in `/boot/config.txt`
 
     device_tree_param=spi=on
@@ -52,6 +48,7 @@ Following table describes how to connect nRF24L01+ to Raspberry Pi.
 ## References
 
 * [Raspberry Pi pinout](https://pinout.xyz/pinout/pin22_gpio25)
+* [nRF24L01+ module pinout](http://imgur.com/a/XlmRq)
 * [Python port of the RF24 library for NRF24L01+ radios](https://github.com/jpbarraca/pynrf24)
 * [RPi.GPIO documentation](https://sourceforge.net/p/raspberry-gpio-python/wiki/Home/)
 
