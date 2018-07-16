@@ -48,14 +48,21 @@ def main():
     logger.info('entering main loop')
     while True:
         while not radio.available(irq_wait=True):
-            pass
+            logger.info("no data")
 
         buf = []
         radio.read(buf)
+        print(binascii.hexlify(bytes(buf)))
         msg = ''.join([chr(x) for x in buf]) # from array of integers into string
 
+        logger.info("received msg: %s" % msg);
+
         # msg = 'topic?payload'
-        topic, payload = msg.split('?')
+        try:
+            topic, payload = msg.split('?')
+        except ValueError as e:
+            logger.error(e)
+            continue
 
         #logger.info('publishing: %s' % msg)
         mqttc.publish(topic, payload);

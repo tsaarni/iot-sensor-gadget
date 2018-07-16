@@ -1,40 +1,92 @@
 
-//#include <stdio.h>
 #include "mbed.h"
-#include "Adafruit_ADS1015.h"
+#include "ads1115.hpp"
+#include "current_transformer.hpp"
+#include "logging.hpp"
+#include "mqtt_bridge.hpp"
+
+#include <string>
 
 
-I2C i2c(PB_7, PB_6);
+I2C i2c(PB_7,  // SDA
+        PB_6); // SCL
+
+DigitalOut activity_led(PB_12);
+
+Ads1115 adc1(&i2c, Ads1115::address_1);
+Ads1115 adc2(&i2c, Ads1115::address_2);
+Ads1115 adc3(&i2c, Ads1115::address_3);
+
+CurrentTransformer ct_phase1("phase 1", &adc1);
+CurrentTransformer ct_phase2("phase 2", &adc2);
+CurrentTransformer ct_phase3("phase 3", &adc3);
+
+MqttBridge mqtt;
 
 
+void
+measure_loop()
+{
+   LOG_INFO("starting radio");
+   mqtt.initialize();
 
+   LOG_INFO("starting A/D converters");
+   adc1.initialize();
+   adc2.initialize();
+   adc3.initialize();
 
-Adafruit_ADS1015 ads1(&i2c, 0b1001000);
-Adafruit_ADS1015 ads2(&i2c, 0b1001001);
-Adafruit_ADS1015 ads3(&i2c, 0b1001010);
+   LOG_INFO("entering measurement loop");
 
-DigitalOut myled(PB_12);
-Serial pc(PA_9, PA_10);
+   Timer timer_;
+   double phase1_amps = 0;
+   double phase2_amps = 0;
+   double phase3_amps = 0;
+
+   while (1) {
+
+      timer_.start();
+
+      auto phase1_volts_rms = ct_phase1.calc_rms();
+      auto phase2_volts_rms = ct_phase2.calc_rms();
+      auto phase3_volts_rms = ct_phase3.calc_rms();
+
+      if  (phase1_volts_rms)
+      {
+         phase1_amps = *phase1_volts_rms * 30;
+      }
+
+      if  (phase2_volts_rms)
+      {
+         phase2_amps = *phase2_volts_rms * 30;
+      }
+
+      if  (phase3_volts_rms)
+      {
+         phase3_amps = *phase3_volts_rms * 30;
+      }
+
+      if (timer_.read_ms() > 1000)
+      {
+         activity_led = !activity_led;
+
+         char msg[30];
+         sprintf(msg, "%0.2f&%0.2f&%0.2f", phase1_amps, phase2_amps, phase3_amps);
+         mqtt.publish("current", msg);
+
+         phase1_amps = 0;
+         phase2_amps = 0;
+         phase3_amps = 0;
+         timer_.reset();
+      }
+
+   }
+}
+
 
 int
 main(int argc, char *argv[])
 {
-   pc.printf("Foo\n");
-   ads1.setGain(GAIN_SIXTEEN); // set range to +/-0.256V
-   ads2.setGain(GAIN_SIXTEEN); // set range to +/-0.256V
-   ads3.setGain(GAIN_SIXTEEN); // set range to +/-0.256V
+   LOG_INFO("Starting");
 
-   int r1, r2, r3;
-
-   while(1) {
-      r1 = ads1.readADC_SingleEnded(0);
-      r2 = ads2.readADC_SingleEnded(0);
-      r3 = ads3.readADC_SingleEnded(0);
-      pc.printf("%d %d %d\n", r1, r2, r3);
-
-      wait(1);
-      myled = 1;
-      wait(1);
-      myled = 0;
-   }
+   measure_loop();
 }
