@@ -44,6 +44,28 @@ Following table describes how to connect nRF24L01+ to Raspberry Pi.
 
 
 
+### Service
+
+Define systemd service for starting the script `/etc/systemd/system/nrf24gateway.service`
+
+    [Unit]
+    Description=nrf24-gateway
+    After=network.target
+
+    [Service]
+    Restart=on-failure
+    KillSignal=SIGINT
+    WorkingDirectory=/home/user/sensor-gadgets/gateways/rpi-python/
+    ExecStart=/home/user/sensor-gadgets/gateways/rpi-python/my-venv/bin/python gateway.py --serve-in-foreground
+
+    [Install]
+    WantedBy=multi-user.target
+
+Enable service
+
+    sudo systemctl --system daemon-reload
+    sudo systemctl enable nrf24gateway.service
+    sudo systemctl start nrf24gateway.service
 
 ## References
 

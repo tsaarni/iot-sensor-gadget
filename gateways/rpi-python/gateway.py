@@ -3,7 +3,7 @@
 import logging
 import nrf24
 import paho.mqtt.client as mqtt
-
+import binascii
 
 # mqtt broker address
 mqtt_address = 'localhost'
@@ -11,7 +11,8 @@ mqtt_address = 'localhost'
 # pipe address for receiving messages from sensors
 nrf_address = '1mqtt'
 
-logging.basicConfig(level=logging.INFO)
+#logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level=logging.ERROR)
 logger = logging.getLogger('gateway')
 
 
@@ -19,6 +20,7 @@ logger = logging.getLogger('gateway')
 
 def mqtt_connect(client, *rest):
     logger.info('connection to mqtt broker established')
+
 
 def mqtt_disconnect(client, *rest):
     logger.info('connection to mqtt broker was terminated')
@@ -36,13 +38,13 @@ def main():
     radio.startListening()
 
     # establish connection to mqtt broker
-    logger.info('establishing connection to mqtt broker: address=%s' % mqtt_address)
+    logger.info('establishing connection to mqtt broker: address=%s' %
+                mqtt_address)
     mqttc = mqtt.Client()
     mqttc.loop_start()  # run client network loop in background thread
     mqttc.on_connect = mqtt_connect
     mqttc.on_disconnect = mqtt_disconnect
     mqttc.connect(host=mqtt_address)
-
 
     # receive messages from sensors and relay them to broker
     logger.info('entering main loop')
@@ -52,10 +54,11 @@ def main():
 
         buf = []
         radio.read(buf)
-        print(binascii.hexlify(bytes(buf)))
-        msg = ''.join([chr(x) for x in buf]) # from array of integers into string
+        logger.debug(binascii.hexlify(bytes(buf)))
+        # from array of integers into string
+        msg = ''.join([chr(x) for x in buf])
 
-        logger.info("received msg: %s" % msg);
+        logger.info("received msg: %s" % msg)
 
         # msg = 'topic?payload'
         try:
@@ -65,7 +68,7 @@ def main():
             continue
 
         #logger.info('publishing: %s' % msg)
-        mqttc.publish(topic, payload);
+        mqttc.publish(topic, payload)
 
 
 if __name__ == '__main__':
