@@ -53,7 +53,7 @@ Define systemd service for starting the script `/etc/systemd/system/nrf24gateway
     After=network.target
 
     [Service]
-    Restart=on-failure
+    Restart=always
     KillSignal=SIGINT
     WorkingDirectory=/home/user/sensor-gadgets/gateways/rpi-python/
     ExecStart=/home/user/sensor-gadgets/gateways/rpi-python/my-venv/bin/python gateway.py --serve-in-foreground
