@@ -24,7 +24,6 @@ const PinName ce   = PA_3;
 MqttBridge::MqttBridge()
    : radio_(ce, csn)
 {
-
 }
 
 
@@ -37,6 +36,7 @@ MqttBridge::initialize()
    radio_.openWritingPipe(address);
    radio_.enableDynamicPayloads();
    radio_.setCRCLength(RF24_CRC_16);
+   radio_.setPALevel(RF24_PA_MAX);
    //radio_.printDetails();
    radio_.stopListening();
 }
@@ -46,5 +46,7 @@ void
 MqttBridge::publish(const std::string& topic, const std::string& msg)
 {
    raii_char_str buf{"/" + topic + "?" + msg};
+   radio_.powerUp();
    radio_.write(&buf[0], buf.size(), 1);
+   radio_.powerDown();
 }
