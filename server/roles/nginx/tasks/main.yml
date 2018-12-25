@@ -1,0 +1,16 @@
+- name: ensure that nginx is installed
+  pacman:
+    name:
+      - nginx
+
+- name: ensure nginx.conf is installed
+  copy:
+    src: nginx.conf
+    dest: /etc/nginx/nginx.conf
+
+- name: ensure nginx is enabled and running
+  systemd:
+    state: started
+    enabled: yes
+    name: nginx
+

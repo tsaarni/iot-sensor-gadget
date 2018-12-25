@@ -1,0 +1,7 @@
+- hosts: server
+  roles:
+    - tools
+    - nodered
+    - influxdb
+    - chronograf
+    - nginx

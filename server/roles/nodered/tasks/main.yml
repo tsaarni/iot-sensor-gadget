@@ -1,0 +1,59 @@
+
+- name: ensure nodered dependencies are installed
+  pacman:
+    name:
+      - nodejs
+      - npm
+      - zeromq   # mqtt requires
+
+# node-red-contrib-openzwave expects node to be called nodejs
+- name: ensure node is symlinked to nodejs
+  file:
+    src: /usr/bin/node
+    dest: /usr/local/bin/nodejs
+    state: link
+
+- name: ensure openzwave is installed
+  aur:
+    name:
+      - aur/openzwave
+  become: yes
+  become_user: aur_builder
+
+- name: ensure nodered group is created
+  group:
+    name: nodered
+
+- name: ensure nodered user is created
+  user:
+    name: nodered
+    groups: nodered, uucp
+    shell: /usr/bin/nologin
+
+- name: ensure directory for nodered exists
+  file:
+    path: /opt/nodered
+    state: directory
+    mode: 0755
+
+- name: ensure nodered and dependencies are installed
+  npm:
+    name: "{{ item }}"
+    path: /opt/nodered
+    executable: "/usr/bin/npm --unsafe-perm"
+  with_items:
+    - node-red
+    - node-red-contrib-openzwave
+    - node-red-contrib-mqtt-broker
+    - node-red-contrib-google-iot-core
+
+- name: ensure systemd service is installed for nodered
+  copy:
+    src: nodered.service
+    dest: /etc/systemd/system/nodered.service
+
+- name: ensure nodered is enabled and running
+  systemd:
+    state: started
+    enabled: yes
+    name: nodered

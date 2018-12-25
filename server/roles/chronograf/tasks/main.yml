@@ -1,0 +1,23 @@
+- name: ensure chronograf is installed
+  aur:
+    name:
+      - aur/chronograf-bin
+  become: yes
+  become_user: aur_builder
+
+- name: ensure directory for chronograf systemd conf exists
+  file:
+    path: /usr/lib/systemd/system/chronograf.service.d/
+    state: directory
+    mode: 0755
+
+- name: ensure systemd service has been configured
+  copy:
+    src: env.conf
+    dest: /usr/lib/systemd/system/chronograf.service.d/env.conf
+
+- name: ensure chronograf is enabled and running
+  systemd:
+    state: started
+    enabled: yes
+    name: chronograf

@@ -1,0 +1,14 @@
+[Unit]
+Description=Node-red
+After=network.target
+
+[Service]
+User=nodered
+Restart=on-failure
+KillSignal=SIGINT
+WorkingDirectory=/opt/nodered
+ExecStart=/opt/nodered/node_modules/.bin/node-red-pi --userDir /home/nodered
+Environment="PATH=/usr/local/sbin:/usr/local/bin:/usr/bin:/opt/nodered/node_modules/.bin/"
+
+[Install]
+WantedBy=multi-user.target

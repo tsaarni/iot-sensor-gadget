@@ -1,0 +1,20 @@
+
+- name: ensure dependencies are installed
+  pacman:
+    name:
+      - python2
+      - python2-pip
+
+
+# https://github.com/kewlfft/ansible-aur
+
+- name: ensure aur_builder user exists
+  user:
+    name: aur_builder
+    group: wheel
+- lineinfile:
+    path: /etc/sudoers.d/11-install-aur_builder
+    line: 'aur_builder ALL=(ALL) NOPASSWD: /usr/bin/pacman'
+    create: yes
+    validate: 'visudo -cf %s'
+

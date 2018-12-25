@@ -1,0 +1,14 @@
+- name: hardening the installation
+  hosts: server
+
+  tasks:
+  - name: ensure nodered listens only localhost
+    lineinfile:
+      path: /home/nodered/settings.js
+      regexp: '^(.*)uiHost: '
+      line: '    uiHost: "127.0.0.1",'
+
+  - name: ensure nodered is restarted
+    systemd:
+      state: restarted
+      name: nodered

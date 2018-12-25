@@ -1,0 +1,6 @@
+influxdb:
+  users:
+    - user_name: "writer"
+      user_password: "dummypass"
+    - user_name: "reader"
+      user_password: "dummypass"
