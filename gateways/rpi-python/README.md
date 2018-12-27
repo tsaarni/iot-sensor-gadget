@@ -10,9 +10,10 @@ sensors and forwards them to MQTT broker.
 
 ## Installation
 
-Enable SPI by adding following line in `/boot/config.txt`
+Enable SPI by adding following in `/boot/config.txt`
 
     device_tree_param=spi=on
+    dtoverlay=spi1-3cs
 
 
 Install python modules
@@ -30,17 +31,36 @@ Install python modules
 Following table describes how to connect nRF24L01+ to Raspberry Pi.
 
 
-    description         nRF24L01+   RPi pin   BCM pin
-    ------------------+-----------+---------+---------
-    GND   black       |        1  |     25  |
-    VCC   white/gray  |        2  |     17  |
-    ------------------+-----------+---------+---------
-    CE    gray        |        3  |     15  |   BCM22
-    CSN   purple      |        4  |     24  |   BCM8
-    SCK   blue        |        5  |     23  |   BCM11
-    MOSI  green       |        6  |     19  |   BCM10
-    MISO  yellow      |        7  |     21  |   BCM9
-    IRQ   orange      |        8  |     22  |   BCM25
+    Alternative 1: SPI0, chip select 0
+    ==================================
+
+    desc      nRF24L01+   RPi pin   BCM pin
+    --------+-----------+---------+---------
+    GND     |        1  |     25  |
+    VCC     |        2  |     17  |
+    --------+-----------+---------+---------
+    CE      |        3  |     15  |   BCM22
+    CSN     |        4  |     24  |   BCM8
+    SCK     |        5  |     23  |   BCM11
+    MOSI    |        6  |     19  |   BCM10
+    MISO    |        7  |     21  |   BCM9
+    IRQ     |        8  |     22  |   BCM25
+
+
+    Alternative 2: SPI1, chip select 2
+    ==================================
+
+    desc      nRF24L01+   RPi pin   BCM pin
+    --------+-----------+---------+---------
+    GND     |        1  |     39  |
+    VCC     |        2  |      1  |
+    --------+-----------+---------+---------
+    CE      |        3  |     37  |   BCM26
+    CSN     |        4  |     36  |   BCM16
+    SCK     |        5  |     40  |   BCM21
+    MOSI    |        6  |     38  |   BCM20
+    MISO    |        7  |     35  |   BCM19
+    IRQ     |        8  |     33  |   BCM13
 
 
 

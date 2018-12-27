@@ -4,7 +4,7 @@
     name:
       - nodejs
       - npm
-      - zeromq   # mqtt requires
+      - zeromq   # required by nodered mqtt broker plugin
 
 # node-red-contrib-openzwave expects node to be called nodejs
 - name: ensure node is symlinked to nodejs
@@ -46,6 +46,7 @@
     - node-red-contrib-openzwave
     - node-red-contrib-mqtt-broker
     - node-red-contrib-google-iot-core
+    - node-red-contrib-influxdb
 
 - name: ensure systemd service is installed for nodered
   copy:

@@ -1,5 +1,5 @@
 spidev == 3.2
 rpi.gpio == 0.6.3
-#git+https://github.com/jpbarraca/pynrf24.git@5aa1cc02d3f56863eb143a7105d76dc92fd25e8b
-# bug: https://github.com/jpbarraca/pynrf24/pull/34
-git+https://github.com/GreeningGalaxy/pynrf24.git@7ad64d1e8915869a4715ecd3d8d9ed037e576216
+paho-mqtt == 1.4.0
+# pure python version of nrf24 library
+git+https://github.com/jpbarraca/pynrf24.git@5aa1cc02d3f56863eb143a7105d76dc92fd25e8b
