@@ -3,7 +3,7 @@
 
 This project includes Ansible scripts for installing the server
 environment for the home automation environment.  The environment
-consist of [node-red](https://nodered.org/) with
+consist of [Node-RED](https://nodered.org/) with
 [MQTT broker](https://github.com/zuhito/node-red-contrib-mqtt-broker)
 support,
 [InfluxDB](https://www.influxdata.com/time-series-platform/influxdb/)
