@@ -12,3 +12,8 @@
     systemd:
       state: restarted
       name: nodered
+
+  - name: lock arch linux arm default user
+    user:
+      name: alarm
+      password_lock: yes

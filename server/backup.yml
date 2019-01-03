@@ -1,0 +1,13 @@
+- name: backup node-red server
+  hosts: server
+
+  tasks:
+  - name: ensure that backup directory exists
+    file:
+      path: /home/tsaarni/backups
+      state: directory
+
+  - name: create backup
+    archive:
+      path: /home/nodered
+      dest: /home/tsaarni/backups/nodered-{{ ansible_date_time.iso8601 }}.tar.gz

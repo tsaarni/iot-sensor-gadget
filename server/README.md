@@ -27,3 +27,8 @@ Run playbook by executing following
 After installation has succeeded run following to execute final steps
 
     ansible-playbook --ask-become-pass hardening.yml
+
+
+Create backup
+
+    ansible-playbook --ask-become-pass backup.yml

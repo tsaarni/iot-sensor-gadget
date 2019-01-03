@@ -16,7 +16,7 @@
 - name: ensure openzwave is installed
   aur:
     name:
-      - aur/openzwave
+      - aur/openzwave-git
   become: yes
   become_user: aur_builder
 
