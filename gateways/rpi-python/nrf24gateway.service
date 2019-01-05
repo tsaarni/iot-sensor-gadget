@@ -1,0 +1,19 @@
+# sudo cp nrf24gateway.service /etc/systemd/system/nrf24gateway.service
+# sudo systemctl --system daemon-reload
+# sudo systemctl enable nrf24gateway.service
+# sudo systemctl start nrf24gateway.service
+[Unit]
+Description=nrf24-gateway
+After=nodered.service
+
+[Service]
+Restart=always
+RestartSec=90
+StartLimitInterval=400
+StartLimitBurst=3
+KillSignal=SIGINT
+WorkingDirectory=/home/tsaarni/src//sensor-gadgets/gateways/rpi-python/
+ExecStart=/home/tsaarni/src/sensor-gadgets/gateways/rpi-python/my-venv/bin/python gateway.py --serve-in-foreground
+
+[Install]
+WantedBy=multi-user.target

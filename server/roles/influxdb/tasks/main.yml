@@ -8,8 +8,16 @@
 - name: ensure influxdb listens only localhost
   lineinfile:
     path: "/etc/influxdb/influxdb.conf"
-    regexp: '^(.*)# bind-address = ":8086"'
+    regexp: '^  bind-address =.*:8086'
+    insertafter: '^  # bind-address = ":8086"'
     line: '  bind-address = "127.0.0.1:8086"'
+
+- name: ensure influxdb authentication is enabled
+  lineinfile:
+    path: "/etc/influxdb/influxdb.conf"
+    regexp: '^  auth-enabled ='
+    insertafter: '^  # auth-enabled ='
+    line: '  auth-enabled = true'
 
 - name: ensure influxdb is enabled and running
   systemd:
@@ -25,4 +33,6 @@
   influxdb_user:
     user_name: "{{ item.user_name }}"
     user_password: "{{ item.user_password }}"
+    admin: "{{ item.admin }}"
   with_items: "{{ influxdb.users }}"
+

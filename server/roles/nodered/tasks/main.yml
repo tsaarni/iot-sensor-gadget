@@ -17,6 +17,7 @@
   aur:
     name:
       - aur/openzwave-git
+    skip_installed: yes   # prevent update every time git repo is updated
   become: yes
   become_user: aur_builder
 

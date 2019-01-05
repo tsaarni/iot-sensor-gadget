@@ -23,6 +23,11 @@ Run playbook by executing following
 
     ansible-playbook --ask-become-pass deploy.yml
 
+Note that the script creates users and sets passwords according to `group_vars/all`.
+To change the passwords run following on target machine:
+
+    influx --username admin --password dummypass
+    > SET PASSWORD FOR "admin" = 'dummypass'
 
 After installation has succeeded run following to execute final steps
 
