@@ -17,3 +17,39 @@
     user:
       name: alarm
       password_lock: yes
+
+  - name: ensure influxdb listens only localhost
+    lineinfile:
+      path: "/etc/influxdb/influxdb.conf"
+      regexp: '^  bind-address =.*:8086'
+      insertafter: '^  # bind-address = ":8086"'
+      line: '  bind-address = "127.0.0.1:8086"'
+
+  - name: ensure influxdb authentication is enabled
+    lineinfile:
+      path: "/etc/influxdb/influxdb.conf"
+      regexp: '^  auth-enabled ='
+      insertafter: '^  # auth-enabled ='
+      line: '  auth-enabled = true'
+
+  - name: ensure influxdb users are created
+    influxdb_user:
+      user_name: "{{ item.user_name }}"
+      user_password: "{{ item.user_password }}"
+      admin: "{{ item.admin }}"
+      login_username: "{{ lookup('env', 'INFLUX_USERNAME') }}"
+      login_password: "{{ lookup('env', 'INFLUX_PASSWORD') }}"
+    with_items: "{{ influxdb.users }}"
+
+  - name: ensure influxdb users have privileges
+    influxdb_query:
+      query: "{{ item }}"
+      database_name: "home"
+      login_username: "{{ lookup('env', 'INFLUX_USERNAME') }}"
+      login_password: "{{ lookup('env', 'INFLUX_PASSWORD') }}"
+    with_items: "{{ influxdb.queries }}"
+
+  - name: restart influxdb to ensure settings are taken into use
+    systemd:
+      state: restarted
+      name: influxdb

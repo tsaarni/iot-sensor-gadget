@@ -2,5 +2,13 @@ influxdb:
   users:
     - user_name: "writer"
       user_password: "dummypass"
+      admin: no
     - user_name: "reader"
       user_password: "dummypass"
+      admin: no
+    - user_name: "admin"
+      user_password: "dummypass"
+      admin: yes
+  queries:
+    - "GRANT WRITE ON home TO writer"
+    - "GRANT READ ON home TO reader"

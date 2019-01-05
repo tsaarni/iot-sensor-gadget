@@ -5,11 +5,6 @@
       - python-influxdb
       - python-requests
 
-- name: ensure influxdb listens only localhost
-  lineinfile:
-    path: "/etc/influxdb/influxdb.conf"
-    regexp: '^(.*)# bind-address = ":8086"'
-    line: '  bind-address = "127.0.0.1:8086"'
 
 - name: ensure influxdb is enabled and running
   systemd:
@@ -21,8 +16,3 @@
   influxdb_database:
     database_name: "home"
 
-- name: ensure user are created
-  influxdb_user:
-    user_name: "{{ item.user_name }}"
-    user_password: "{{ item.user_password }}"
-  with_items: "{{ influxdb.users }}"
