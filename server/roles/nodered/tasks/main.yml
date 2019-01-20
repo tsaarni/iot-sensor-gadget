@@ -48,6 +48,9 @@
     - node-red-contrib-mqtt-broker
     - node-red-contrib-google-iot-core
     - node-red-contrib-influxdb
+    - node-red-node-openweathermap
+    - node-red-contrib-chatbot
+    - node-red-contrib-pid
 
 - name: ensure systemd service is installed for nodered
   copy:
