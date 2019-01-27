@@ -32,6 +32,10 @@
       insertafter: '^  # auth-enabled ='
       line: '  auth-enabled = true'
 
+  - name: ensure home database is created
+    influxdb_database:
+      database_name: "home"
+
   - name: ensure influxdb users are created
     influxdb_user:
       user_name: "{{ item.user_name }}"

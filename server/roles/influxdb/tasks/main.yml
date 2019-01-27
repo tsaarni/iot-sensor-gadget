@@ -12,7 +12,3 @@
     enabled: yes
     name: influxdb
 
-- name: ensure home database is created
-  influxdb_database:
-    database_name: "home"
-

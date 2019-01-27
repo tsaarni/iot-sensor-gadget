@@ -14,10 +14,7 @@
     state: link
 
 - name: ensure openzwave is installed
-  aur:
-    name:
-      - aur/openzwave-git
-    skip_installed: yes   # prevent update every time git repo is updated
+  aur: name=aur/openzwave-git skip_installed=True   # prevent update every time git repo is updated
   become: yes
   become_user: aur_builder
 
@@ -51,6 +48,8 @@
     - node-red-node-openweathermap
     - node-red-contrib-chatbot
     - node-red-contrib-pid
+    - git+https://github.com/tsaarni/node-red-contrib-interpolate.git
+
 
 - name: ensure systemd service is installed for nodered
   copy:
@@ -59,6 +58,6 @@
 
 - name: ensure nodered is enabled and running
   systemd:
-    state: started
+    state: restarted
     enabled: yes
     name: nodered
