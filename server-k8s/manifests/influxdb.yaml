@@ -1,0 +1,104 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: influxdb
+  labels:
+    app: influxdb
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: influxdb
+  template:
+    metadata:
+      labels:
+        app: influxdb
+    spec:
+      containers:
+      - name: influxdb
+        image: influxdb:1.7.9
+        ports:
+        - containerPort: 8086
+        volumeMounts:
+        - mountPath: /var/lib/influxdb
+          name: influxdb-data
+        envFrom:
+        - configMapRef:
+            name: influxdb-config
+      volumes:
+      - name: influxdb-data
+        persistentVolumeClaim:
+          claimName: influxdb-pvc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: influxdb
+spec:
+  selector:
+    app: influxdb
+  ports:
+    - protocol: TCP
+      port: 8086
+      targetPort: 8086
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: influxdb-config
+data:
+  INFLUXDB_REPORTING_DISABLED: "true"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: chronograf
+  labels:
+    app: chronograf
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: chronograf
+  template:
+    metadata:
+      labels:
+        app: chronograf
+    spec:
+      containers:
+      - name: chronograf
+        image: chronograf:1.7
+        ports:
+        - containerPort: 8888
+        volumeMounts:
+        - mountPath: /var/lib/chronograf
+          name: chronograf-data
+      volumes:
+      - name: chronograf-data
+        persistentVolumeClaim:
+          claimName: chronograf-pvc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: chronograf
+spec:
+  selector:
+    app: chronograf
+  ports:
+    - protocol: TCP
+      port: 8888
+      targetPort: 8888
+---
+kind: Ingress
+apiVersion: extensions/v1beta1
+metadata:
+  name: chronograf
+spec:
+  rules:
+  - host: chronograf.home
+    http:
+      paths:
+      - backend:
+          serviceName: chronograf
+          servicePort: 8888
